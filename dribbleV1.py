@@ -106,6 +106,7 @@ for step in range(20000):
     # crude apex detection: velocity sign flips from + to -
     if prev_vz > 0 and vz <= 0:
         apex_log.append((t, ball_pos[2]))
+        print(f"apex #{len(apex_log):3d}  t={t:6.2f}s  z={ball_pos[2]:.3f}m")
     prev_vz = vz
 
     contacts = p.getContactPoints(ball, paddle)
