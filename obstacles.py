@@ -51,6 +51,21 @@ def obstacle_blocks(obs, x, y, radius):
     return qx * qx + qy * qy <= radius * radius
 
 
+# Random size ranges per obstacle kind, in meters -- (hx, hy, height), where
+# hx/hy are half-extents for crate/wall but hx doubles as the radius (hy
+# unused) for pillar. Centralized here, rather than inlined in
+# generate_course, so other tools (e.g. a reference figure of what each kind
+# looks like and how big it can get) can report these exact ranges instead
+# of a second, driftable copy. Sized at or above the robot's own footprint
+# (BASE_XY_HALF=0.2) so obstacles are genuine obstacles, not gaps the robot
+# dwarfs; wall is thin but at least robot-length along its long axis.
+OBSTACLE_SIZE_RANGES = {
+    "crate":  {"hx": (0.20, 0.30), "hy": (0.20, 0.30), "height": (0.2, 0.4)},
+    "pillar": {"hx": (0.25, 0.40), "hy": (0.25, 0.40), "height": (0.4, 0.8)},   # wider cylinders
+    "wall":   {"hx": (0.06, 0.10), "hy": (0.25, 0.45), "height": (0.3, 0.6)},
+}
+
+
 def generate_course(rng):
     """6-9 obstacles, each with a random kind/size/orientation, scattered on
     both sides of the straight-ahead line (y drawn from a triangular
@@ -68,16 +83,13 @@ def generate_course(rng):
     obstacles = []
     for _ in range(n):
         yaw = rng.uniform(0, 2 * math.pi)
-        kind = rng.choice(["crate", "pillar", "wall"])
-        # Sized at or above the robot's own footprint (BASE_XY_HALF=0.2) so
-        # obstacles are genuine obstacles, not gaps the robot dwarfs.
-        if kind == "crate":
-            hx, hy, height = rng.uniform(0.20, 0.30), rng.uniform(0.20, 0.30), rng.uniform(0.2, 0.4)
-        elif kind == "pillar":
-            hx = hy = rng.uniform(0.25, 0.40)   # wider cylinders
-            height = rng.uniform(0.4, 0.8)
-        else:  # wall: thin, but at least robot-length along its long axis
-            hx, hy, height = rng.uniform(0.06, 0.10), rng.uniform(0.25, 0.45), rng.uniform(0.3, 0.6)
+        kind = rng.choice(list(OBSTACLE_SIZE_RANGES))
+        size = OBSTACLE_SIZE_RANGES[kind]
+        if kind == "pillar":
+            hx = hy = rng.uniform(*size["hx"])
+        else:
+            hx, hy = rng.uniform(*size["hx"]), rng.uniform(*size["hy"])
+        height = rng.uniform(*size["height"])
 
         reach = math.hypot(hx, hy)
         y_lo, y_hi = -COURSE_HALF_WIDTH + reach, COURSE_HALF_WIDTH - reach
