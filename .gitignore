@@ -19,3 +19,6 @@ __pycache__/
 
 # PyBullet logs
 *.log
+
+# Recorded run videos
+video_runs/
