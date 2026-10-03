@@ -254,11 +254,17 @@ starting point for the metrics/logging pipeline.
 and amend their own subsection before submission.}
 
 \subsection*{Rudy Arsenault}
-Stood up the simulation environment and implemented the first working
+Created the initial environment to get the simulation working and implemented the first working
 dribble test; diagnosed and fixed the energy bug that kept the ball's
 first bounce from reaching hand height, producing the first reliable
-stationary dribble (Objective~1). \textit{[Rudy: please expand with your
-own account of this work and any challenges.]}
+stationary dribble (Objective~1); identified that the initial contact
+model produced juggling-style behavior rather than a basketball-style
+dribble and corrected the geometry to a two-event hybrid model --- an
+actively controlled hand contact (paddle) above the ball and a passive,
+restitution-based floor bounce below it; diagnosed and fixed a
+corresponding object-placement overlap between the ball and paddle;
+verified model produced a stable periodic dribble by logging the
+ball's apex height and period across bounce cycles while testing.
 
 \subsection*{Tracy Yang}
 Built the mobile base integration (chassis + arm + paddle turning and
