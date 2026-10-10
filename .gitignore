@@ -22,3 +22,7 @@ __pycache__/
 
 # Recorded run videos
 video_runs/
+
+*.out
+*.synctex.gz
+*.aux

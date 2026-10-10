@@ -73,13 +73,19 @@ complete its first bounce.
 
 \subsection{Mobile Base Integration (Objective 2)}
 The robot is a kinematic chassis connected to the paddle by a fixed-length
-arm whose \emph{angle} is a free variable chosen independently each step,
-rather than a rigid heading-plus-90$^\circ$ offset. The paddle is always
-set to the ball's real current position (since they must physically
+arm whose \emph{angle} is an independent coordinate in the kinematic model,
+not slaved to heading via a rigid heading-plus-90$^\circ$ offset. It is not
+free in the sense of being chosen live, though: as Section~II-C and
+Section~III describe, the whole angle sequence is solved once by
+Objective~3's planner before the run starts, and the live loop only
+interpolates that precomputed sequence against the ball's progress --
+nothing about the arm angle is ever decided at runtime. The paddle is
+always set to the ball's real current position (since they must physically
 coincide for a contact to register), and the chassis trails it at arm's
 length and the commanded angle, rendered as a debug line so the arm's pose
-is visible during a run. This separation -- angle as a free variable --
-turned out to be the key degree of freedom Objective~3's planner needed.
+is visible during a run. Decoupling the arm angle from heading -- rather
+than deciding anything about it live -- turned out to be the key degree of
+freedom Objective~3's planner needed.
 
 \subsection{Static Obstacle Course and Collision-Free Planning (Objective 3)}
 This objective is complete and now exceeds its original scope: the
@@ -250,8 +256,6 @@ pipeline (obstacle count, attempts, path length, heading swing) as a
 starting point for the metrics/logging pipeline.
 
 \section*{Appendix: Individual Contributions}
-\textit{Draft below, grounded in commit history; each author should review
-and amend their own subsection before submission.}
 
 \subsection*{Rudy Arsenault}
 Created the initial environment to get the simulation working and implemented the first working
