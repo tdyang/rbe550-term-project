@@ -26,3 +26,6 @@ video_runs/
 *.out
 *.synctex.gz
 *.aux
+
+# Cached solved courses (simulation.py)
+.course_cache/
